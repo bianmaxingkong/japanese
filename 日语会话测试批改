@@ -169,6 +169,6 @@ python3 scripts/send_summary_message.py [--xlsx PATH]
 - Whisper 转写仅作参考，必须执行对齐校验。
 - 鼓励为主，微小误差不扣分。
 - 同一错误只扣一次。
-- 严格按 A1/A2/B1能力层级控制纠错数量（操作标签参考 N5/N4/N3 级别）。
+- 严格按 A1/A2/B1初段能力层级控制纠错数量（操作标签参考 N5/N4/N3 级别）。
 - 评语简洁友好，不使用特殊符号。
 - 所有规则以 references/workflow.md 为准。
