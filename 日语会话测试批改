@@ -1,5 +1,5 @@
 ---
-name: canvas-japanese-conversation-grading
+name: japanese-conversation-grading
 description: 日语会话作业AI批改——支持语音转写、CEFR（欧洲语言共同参考框架）分级评价、纠错与成绩录入。
 use_when: 教师批改日语会话作业录音、会话测试打分、批量评分与反馈
 triggers:
@@ -120,21 +120,12 @@ whisper /tmp/audio.wav --model medium --language ja --output_format txt
 - 转写存疑、不确定的地方不纠错。
 - 评语温和简洁，保护表达信心。
 
-## Step 4：录入Canvas成绩
-
-```bash
-python3 scripts/grade_submission.py COURSE_ID ASSIGNMENT_ID USER_ID GRADE --comment "评语内容"
-python3 scripts/grade_submission.py COURSE_ID ASSIGNMENT_ID USER_ID GRADE --comment-file comment.txt
-```
-
-## Step 5：生成汇总 + 上传
+## Step 4：生成汇总 + 上传
 
 ```bash
 # 生成班级汇总文件
 python3 scripts/generate_class_summary.py COURSE_ID ASSIGNMENT_ID [--class-name NAME]
 
-# 上传汇总表到Canvas
-python3 scripts/send_summary_message.py [--xlsx PATH]
 ```
 
 ## 反馈格式模板（无emoji）
