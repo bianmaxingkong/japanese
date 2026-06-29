@@ -1,5 +1,5 @@
 ---
-name: canvas-japanese-conversation-grading
+name:日语会话测试批改（ japanese-conversation-grading） 
 description: 日语会话作业AI批改——支持语音转写、CEFR（欧洲语言共同参考框架）分级评价、纠错与成绩录入。
 use_when: 教师批改日语会话作业录音、会话测试打分、批量评分与反馈
 triggers:
@@ -23,32 +23,21 @@ triggers:
 |------|------|
 | Step 1 | 下载学生提交音频 |
 | Step 2 | Whisper medium 转写 |
-| Step 3 | CEFR（A1/A2/B1）+ JLPT N5/N4/N3级别参考分级评分 + 温和纠错 |
-| Step 4 | 录入Canvas成绩 |
-| Step 5 | 生成班级汇总 + 上传 |
+| Step 3 | CEFR（A1/A2/B1）+ JLPT N5/N4/N3级别参考分级评分 + 纠错 |
+| Step 4 | 生成班级汇总 |
 
 ## Step 1：下载音频
-
-```bash
-python3 scripts/download_audio_submissions.py COURSE_ID ASSIGNMENT_ID
-```
-
-输出：`/tmp/canvas_audio_CID_AID/submission_map.json`
 
 ## Step 2：Whisper 转写
 
 - 本技能音频转写使用 Whisper medium 模型（本地运行），模型已固定，无需手动切换。
-
-```bash
-# MP4视频 → 音频预处理
-ffmpeg -y -i "input.mp4" -vn -acodec pcm_s16le -ar 16000 -ac 1 /tmp/audio.wav
 
 # 固定medium模型日语转写
 whisper /tmp/audio.wav --model medium --language ja --output_format txt
 ```
 
 ## Step 3：评分规则
-### 能力层级说明（双轨分级）
+### 能力层级说明
 
 正式口语能力框架遵循 **CEFR（欧洲语言共同参考框架）**；该框架共设A1、A2、B1、B2、C1、C2六个等级，本系统仅采用A1、A2、B1三个等级。
 
@@ -72,9 +61,9 @@ whisper /tmp/audio.wav --model medium --language ja --output_format txt
 
 | SKILL维度 | 权重 | 评估要点 |
 |-----------|------|----------|
-| C 复杂性（Complexity） | 80% | 内容贴合与表达复杂度 |
-| A 准确性（Accuracy） | 10% | 语法、词汇、语音规范 |
-| F 流利度（Fluency） | 10% | 话语输出节奏、连贯性、停顿与沉默控制 |
+| C 复杂度（Complexity） | 80% | 内容切题、句式词汇丰富度、表达层次与逻辑 |
+| A 准确性（Accuracy） | 10% | 语法正确性、词汇选用规范、发音清晰可辨 |
+| F 流利度（Fluency） | 10% | 语速自然适中、停顿位置合理、语句衔接连贯、自我修正频率 |
 
 ### 总分计算
 
@@ -120,21 +109,12 @@ whisper /tmp/audio.wav --model medium --language ja --output_format txt
 - 转写存疑、不确定的地方不纠错。
 - 评语温和简洁，保护表达信心。
 
-## Step 4：录入Canvas成绩
-
-```bash
-python3 scripts/grade_submission.py COURSE_ID ASSIGNMENT_ID USER_ID GRADE --comment "评语内容"
-python3 scripts/grade_submission.py COURSE_ID ASSIGNMENT_ID USER_ID GRADE --comment-file comment.txt
-```
-
-## Step 5：生成汇总 + 上传
+## Step 4：生成汇总 + 上传
 
 ```bash
 # 生成班级汇总文件
 python3 scripts/generate_class_summary.py COURSE_ID ASSIGNMENT_ID [--class-name NAME]
 
-# 上传汇总表到Canvas
-python3 scripts/send_summary_message.py [--xlsx PATH]
 ```
 
 ## 反馈格式模板（无emoji）
@@ -169,6 +149,9 @@ python3 scripts/send_summary_message.py [--xlsx PATH]
 - Whisper 转写仅作参考，必须执行对齐校验。
 - 鼓励为主，微小误差不扣分。
 - 同一错误只扣一次。
-- 严格按 A1/A2/B1能力层级控制纠错数量（操作标签参考 N5/N4/N3 级别）。
+- 严格按 A1/A2/B1初段能力层级控制纠错数量（操作标签参考 N5/N4/N3 级别）。
 - 评语简洁友好，不使用特殊符号。
 - 所有规则以 references/workflow.md 为准。
+
+
+
